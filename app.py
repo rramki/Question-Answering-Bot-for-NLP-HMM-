@@ -77,7 +77,7 @@ if role == "User":
 
         question = st.text_input("Enter your question")
 
-        question = st.text_input("Enter your question")
+        
 
 if question:
 
