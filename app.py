@@ -61,10 +61,6 @@ if role == "User":
 
             llm = ChatAnthropic(model="claude-3-haiku-20240307",temperature=0)
 
-            #chain = load_qa_chain(llm)
-
-            #answer = chain.run(input_documents=docs, question=question)
-            
             chain = create_stuff_documents_chain(llm)
             response = chain.invoke({"input_documents": docs,"question": question})
             answer=response
