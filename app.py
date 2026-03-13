@@ -9,6 +9,18 @@ import anthropic
 st.title("📚 AI Tutor for NLP / HMM")
 
 model = SentenceTransformer("all-MiniLM-L6-v2")
+def split_text(text, chunk_size=500):
+    words = text.split()
+    chunks = []
+    
+    for i in range(0, len(words), chunk_size):
+        chunk = " ".join(words[i:i+chunk_size])
+        chunks.append(chunk)
+        
+    return chunks
+
+documents = split_text(text)
+
 
 role = st.sidebar.selectbox("Login as", ["User", "Admin"])
 
@@ -34,7 +46,8 @@ if role == "Admin":
         for page in reader.pages:
             text += page.extract_text()
 
-        documents = text.split("\n")
+        documents = split_text(text)
+        
 
         embeddings = model.encode(documents)
 
@@ -78,6 +91,7 @@ if role == "User":
             for i in ids[0][:2]:
                 context += documents[i][:800] + "\n"
             context = context[:2000]
+            
             client = anthropic.Anthropic(
                 api_key=st.secrets["ANTHROPIC_API_KEY"]
             )
@@ -88,7 +102,7 @@ if role == "User":
                 messages=[
                     {
                         "role": "user",
-                        "content": f"Answer based on context:\n{context}\nQuestion:{question}"
+                        "content": f"Use the following context to answer:\n\n{context}\n\nQuestion: {question}"
                     }
                 ]
             )
