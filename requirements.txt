@@ -1,5 +1,7 @@
 streamlit
 pypdf
+numpy
+pydantic==1.10.13
 langchain==0.1.17
 langchain-community==0.0.36
 langchain-text-splitters==0.0.1
@@ -7,4 +9,3 @@ langchain-anthropic
 sentence-transformers
 faiss-cpu
 anthropic
-numpy
