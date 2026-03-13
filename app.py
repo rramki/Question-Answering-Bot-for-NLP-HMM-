@@ -91,7 +91,8 @@ if role == "User":
 
             
             st.write("### Answer")
-            st.write(answer)
+            st.write(response.content[0].text)
+            
     else:
 
         st.warning("Admin must upload PDF first.")
