@@ -77,8 +77,6 @@ if role == "User":
 
 question = st.text_input("Enter your question")
 
-   
-
 if question:
 
     query_vector = model.encode([question])
