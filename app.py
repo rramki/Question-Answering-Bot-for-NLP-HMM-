@@ -75,7 +75,7 @@ if role == "User":
 
         documents = np.load("vectorstore/docs.npy", allow_pickle=True)
 
-        question = st.text_input("Enter your question")
+question = st.text_input("Enter your question")
 
         
 
