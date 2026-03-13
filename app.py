@@ -1,48 +1,71 @@
 import streamlit as st
 from pypdf import PdfReader
-from sentence_transformers import SentenceTransformer
-import faiss
-import numpy as np
+from langchain.text_splitter import CharacterTextSplitter
+from langchain.embeddings import HuggingFaceEmbeddings
+from langchain.vectorstores import FAISS
+from langchain.llms import Anthropic
+from langchain.chains.question_answering import load_qa_chain
+import os
 
-st.title("📄 PDF Question Answering AI")
+st.title("📚 Subject PDF AI Assistant")
 
-model = SentenceTransformer("all-MiniLM-L6-v2")
+role = st.sidebar.selectbox("Login as", ["User", "Admin"])
 
-uploaded_file = st.file_uploader("Upload a PDF", type="pdf")
+embeddings = HuggingFaceEmbeddings()
 
-documents = []
-index = None
+# ADMIN PANEL
+if role == "Admin":
 
-if uploaded_file:
+    st.header("Admin Panel - Upload Subject PDFs")
 
-    reader = PdfReader(uploaded_file)
+    uploaded_file = st.file_uploader("Upload Subject PDF", type="pdf")
 
-    text = ""
+    if uploaded_file:
 
-    for page in reader.pages:
-        text += page.extract_text()
+        reader = PdfReader(uploaded_file)
 
-    documents = text.split("\n")
+        text = ""
 
-    embeddings = model.encode(documents)
+        for page in reader.pages:
+            text += page.extract_text()
 
-    dim = embeddings.shape[1]
+        splitter = CharacterTextSplitter(
+            chunk_size=500,
+            chunk_overlap=50
+        )
 
-    index = faiss.IndexFlatL2(dim)
+        texts = splitter.split_text(text)
 
-    index.add(np.array(embeddings))
+        db = FAISS.from_texts(texts, embeddings)
 
-    st.success("PDF processed successfully!")
+        db.save_local("vectorstore")
 
-question = st.text_input("Ask a question about the PDF")
+        st.success("Vector database created successfully!")
 
-if question and index:
+# USER PANEL
+if role == "User":
 
-    query_vector = model.encode([question])
+    st.header("Ask Questions")
 
-    distances, ids = index.search(np.array(query_vector), k=1)
+    if os.path.exists("vectorstore"):
 
-    answer = documents[ids[0][0]]
+        db = FAISS.load_local("vectorstore", embeddings)
 
-    st.write("### Answer")
-    st.write(answer)
+        question = st.text_input("Enter your question")
+
+        if question:
+
+            docs = db.similarity_search(question)
+
+            llm = Anthropic()
+
+            chain = load_qa_chain(llm)
+
+            answer = chain.run(input_documents=docs, question=question)
+
+            st.write("### Answer")
+            st.write(answer)
+
+    else:
+
+        st.warning("No subject database found. Admin must upload PDFs.")
