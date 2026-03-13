@@ -79,15 +79,17 @@ if role == "User":
             )
 
             response = client.messages.create(
-                model="claude-3-haiku-latest",
-                max_tokens=300,
-                messages=[
-                    {
-                        "role": "user",
-                        "content": f"Answer based on context:\n{context}\nQuestion:{question}"
-                    }
-                ]
-            )
+    model="claude-3-haiku-20240307",
+    max_tokens=300,
+    messages=[
+        {
+            "role": "user",
+            "content": f"Answer using this context:\n{context}\n\nQuestion:{question}"
+        }
+    ]
+)
+
+            
             st.write("### Answer")
             st.write(answer)
     else:
