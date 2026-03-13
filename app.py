@@ -3,7 +3,7 @@ from pypdf import PdfReader
 from langchain_text_splitters import CharacterTextSplitter
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
-from langchain.llms import Anthropic
+from langchain_anthropic import ChatAnthropic
 from langchain.chains.question_answering import load_qa_chain
 import os
 
