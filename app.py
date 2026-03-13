@@ -44,10 +44,11 @@ if role == "Admin":
 
         index.add(np.array(embeddings))
 
+        if not os.path.exists("vectorstore"):
+            os.makedirs("vectorstore")
+
         faiss.write_index(index, "vectorstore/index.faiss")
-
         np.save("vectorstore/docs.npy", documents)
-
         st.success("Vector database created!")
 
 # -------------------
