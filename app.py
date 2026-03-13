@@ -80,7 +80,7 @@ question = st.text_input("Enter your question")
 if question:
 
     query_vector = model.encode([question])
-    distances, ids = index.search(np.array(query_vector), k=2)
+    distances, ids = index.search(np.array(query_vector), k=3)
 
     context = ""
 
