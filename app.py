@@ -77,43 +77,40 @@ if role == "User":
 
         question = st.text_input("Enter your question")
 
-        if question:
+        question = st.text_input("Enter your question")
 
-            query_vector = model.encode([question])
+if question:
 
-            distances, ids = index.search(np.array(query_vector), k=2)
+    query_vector = model.encode([question])
+    distances, ids = index.search(np.array(query_vector), k=2)
 
-            context = ""
+    context = ""
 
-            for i in ids[0][:2]:
-                context += documents[i][:700] + "\n"
-            context = context[:1500]
-            
-            client = anthropic.Anthropic(
-                api_key=st.secrets["ANTHROPIC_API_KEY"]
-            )
+    for i in ids[0][:2]:
+        context += documents[i][:700] + "\n"
 
-            try:
-                
-                response = client.messages.create(
-        model="claude-3-5-haiku-latest",
-        max_tokens=200,
-        messages=[
-            {
+    context = context[:1500]
+
+    answer = None
+
+    try:
+        response = client.messages.create(
+            model="claude-3-5-haiku-latest",
+            max_tokens=200,
+            messages=[{
                 "role": "user",
                 "content": f"Context:\n{context}\n\nQuestion:{question}"
-            }
-        ]
-    )
-               
-                answer = response.content[0].text
-                
-            except Exception as e:
-                st.error("Claude API error. Try asking a shorter question.")
-            if answer:
-                st.write("### Answer")
-                st.write(response.content[0].text)
+            }]
+        )
 
+        answer = response.content[0].text
+
+    except Exception:
+        st.error("Claude API error. Try asking a shorter question.")
+
+    if answer:
+        st.write("### Answer")
+        st.write(answer)
     else:
 
         st.warning("Admin must upload PDF first.")
