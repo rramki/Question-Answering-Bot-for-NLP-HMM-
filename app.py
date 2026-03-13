@@ -24,9 +24,8 @@ if role == "Admin":
     else:
         admin_logged = False
 
-if admin_logged:
-
-    subject = st.selectbox(
+    if admin_logged:
+        subject = st.selectbox(
         "Select Subject",
         ["NLP", "MachineLearning", "CloudComputing"]
     )
@@ -35,34 +34,33 @@ if admin_logged:
 
 
 
-if uploaded_file:
+    if uploaded_file:
+        reader = PdfReader(uploaded_file)
 
-    reader = PdfReader(uploaded_file)
+        text = ""
 
-    text = ""
+        for page in reader.pages:
+            text += page.extract_text()
 
-    for page in reader.pages:
-        text += page.extract_text()
+        documents = text.split("\n")
 
-    documents = text.split("\n")
+        embeddings = model.encode(documents)
 
-    embeddings = model.encode(documents)
+        dim = embeddings.shape[1]
 
-    dim = embeddings.shape[1]
+        index = faiss.IndexFlatL2(dim)
 
-    index = faiss.IndexFlatL2(dim)
+        index.add(np.array(embeddings))
 
-    index.add(np.array(embeddings))
+        folder = f"vectorstore/{subject}"
 
-    folder = f"vectorstore/{subject}"
+        os.makedirs(folder, exist_ok=True)
 
-    os.makedirs(folder, exist_ok=True)
+        faiss.write_index(index, f"{folder}/index.faiss")
 
-    faiss.write_index(index, f"{folder}/index.faiss")
+        np.save(f"{folder}/docs.npy", documents)
 
-    np.save(f"{folder}/docs.npy", documents)
-
-    st.success(f"{subject} vector database created!")
+        st.success(f"{subject} vector database created!")
 
 
 
