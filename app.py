@@ -4,7 +4,9 @@ from langchain_text_splitters import CharacterTextSplitter
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_anthropic import ChatAnthropic
+from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains.question_answering import load_qa_chain
+
 import os
 
 st.title("📚 AI Assistant for NLP - HMM")
@@ -59,9 +61,13 @@ if role == "User":
 
             llm = ChatAnthropic(model="claude-3-haiku-20240307",temperature=0)
 
-            chain = load_qa_chain(llm)
+            #chain = load_qa_chain(llm)
 
-            answer = chain.run(input_documents=docs, question=question)
+            #answer = chain.run(input_documents=docs, question=question)
+            
+            chain = create_stuff_documents_chain(llm)
+            response = chain.invoke({"input_documents": docs,"question": question})
+            answer=response
 
             st.write("### Answer")
             st.write(answer)
