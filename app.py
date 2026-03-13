@@ -4,11 +4,8 @@ from langchain_text_splitters import CharacterTextSplitter
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_anthropic import ChatAnthropic
-from langchain.chains.combine_documents import create_stuff_documents_chain
-
-
+from langchain.chains.question_answering import load_qa_chain
 import os
-
 st.title("📚 AI Assistant for NLP - HMM")
 
 role = st.sidebar.selectbox("Login as", ["User", "Admin"])
