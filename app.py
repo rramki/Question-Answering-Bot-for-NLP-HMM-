@@ -18,7 +18,6 @@ def split_text(text, chunk_size=500):
         chunks.append(chunk)
         
     return chunks
-documents = split_text(text)
 
 
 role = st.sidebar.selectbox("Login as", ["User", "Admin"])
@@ -45,7 +44,7 @@ if role == "Admin":
         for page in reader.pages:
             text += page.extract_text()
 
-          
+        documents = split_text(text)   
 
         embeddings = model.encode(documents)
 
