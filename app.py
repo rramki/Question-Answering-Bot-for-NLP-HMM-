@@ -12,7 +12,7 @@ st.title("📚 AI Assistant for NLP - HMM")
 role = st.sidebar.selectbox("Login as", ["User", "Admin"])
 
 embeddings = HuggingFaceEmbeddings()
-
+os.environ["ANTHROPIC_API_KEY"] = "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"
 # ADMIN PANEL
 if role == "Admin":
 
@@ -57,7 +57,7 @@ if role == "User":
 
             docs = db.similarity_search(question)
 
-            llm = Anthropic()
+            llm = ChatAnthropic(model="claude-3-haiku-20240307",temperature=0)
 
             chain = load_qa_chain(llm)
 
