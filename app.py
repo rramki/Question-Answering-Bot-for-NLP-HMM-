@@ -33,7 +33,7 @@ if role == "Admin":
         for page in reader.pages:
             text += page.extract_text()
 
-        documents = split_text(text)   
+        documents = text.split("\n")   
 
         embeddings = model.encode(documents)
 
