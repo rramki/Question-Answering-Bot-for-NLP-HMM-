@@ -1,8 +1,8 @@
 import streamlit as st
 from pypdf import PdfReader
-from langchain.text_splitter import CharacterTextSplitter
-from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.vectorstores import FAISS
+from langchain_text_splitters import CharacterTextSplitter
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores import FAISS
 from langchain.llms import Anthropic
 from langchain.chains.question_answering import load_qa_chain
 import os
