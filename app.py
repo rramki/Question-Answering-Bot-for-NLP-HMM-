@@ -110,9 +110,9 @@ if role == "User":
                 
             except Exception as e:
                 st.error("Claude API error. Try asking a shorter question.")
-    if answer:
-        st.write("### Answer")
-        st.write(response.content[0].text)
+            if answer:
+                st.write("### Answer")
+                st.write(response.content[0].text)
 
     else:
 
