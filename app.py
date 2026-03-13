@@ -6,7 +6,7 @@ import numpy as np
 import os
 import anthropic
 
-st.title("📚 AI Tutor for NLP / HMM")
+st.title("📚 AI Tutor for NLP")
 
 model = SentenceTransformer("all-MiniLM-L6-v2")
 role = st.sidebar.selectbox("Login as", ["User", "Admin"])
