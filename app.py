@@ -75,8 +75,12 @@ if role == "User":
 
             context = ""
 
-            for i in ids[0]:
+            '''for i in ids[0]:
                 context += documents[i] + "\n"
+            context = ""'''
+
+           for i in ids[0][:2]:   # only top 2 chunks
+                context += documents[i][:800] + "\n"
 
             client = anthropic.Anthropic(
                 api_key=st.secrets["ANTHROPIC_API_KEY"]
