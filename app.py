@@ -83,7 +83,7 @@ if role == "User":
             )
 
             response = client.messages.create(
-                model="claude-3-sonnet-latest",
+                model="claude-3-opus-latest",
                 max_tokens=300,
                 messages=[
                     {
