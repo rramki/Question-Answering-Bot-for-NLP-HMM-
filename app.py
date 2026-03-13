@@ -7,9 +7,10 @@ import os
 import anthropic
 
 st.title("📚 AI Tutor for NLP")
-
+ADMIN_USER = "admin"
+ADMIN_PASS = "nlp123"
 model = SentenceTransformer("all-MiniLM-L6-v2")
-# Admin login UI:
+
 role = st.sidebar.selectbox("Login as", ["User", "Admin"])
 
 if role == "Admin":
