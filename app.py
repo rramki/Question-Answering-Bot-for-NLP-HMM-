@@ -75,10 +75,6 @@ if role == "User":
 
             context = ""
 
-            '''for i in ids[0]:
-                context += documents[i] + "\n"
-            context = ""'''
-
             for i in ids[0][:2]:
                 context += documents[i][:800] + "\n"
             context = context[:2000]
