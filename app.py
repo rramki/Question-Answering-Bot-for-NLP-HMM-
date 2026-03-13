@@ -7,7 +7,7 @@ from langchain.llms import Anthropic
 from langchain.chains.question_answering import load_qa_chain
 import os
 
-st.title("📚 NLP AI Assistant")
+st.title("📚 AI Assistant for NLP - HMM")
 
 role = st.sidebar.selectbox("Login as", ["User", "Admin"])
 
