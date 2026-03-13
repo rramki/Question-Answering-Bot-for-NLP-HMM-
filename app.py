@@ -71,7 +71,7 @@ if role == "User":
 
             query_vector = model.encode([question])
 
-            distances, ids = index.search(np.array(query_vector), k=3)
+            distances, ids = index.search(np.array(query_vector), k=2)
 
             context = ""
 
@@ -81,7 +81,7 @@ if role == "User":
 
            for i in ids[0][:2]:   # only top 2 chunks
                 context += documents[i][:800] + "\n"
-
+           context = context[:2000]
             client = anthropic.Anthropic(
                 api_key=st.secrets["ANTHROPIC_API_KEY"]
             )
