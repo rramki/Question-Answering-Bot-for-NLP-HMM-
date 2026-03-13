@@ -1,23 +1,29 @@
 import streamlit as st
 from pypdf import PdfReader
-from langchain_text_splitters import CharacterTextSplitter
-from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain_community.vectorstores import FAISS
-from langchain_anthropic import ChatAnthropic
-from langchain.chains.question_answering import load_qa_chain
+from sentence_transformers import SentenceTransformer
+import faiss
+import numpy as np
 import os
-st.title("📚 AI Assistant for NLP - HMM")
+import anthropic
+
+st.title("📚 AI Tutor for NLP / HMM")
+
+model = SentenceTransformer("all-MiniLM-L6-v2")
 
 role = st.sidebar.selectbox("Login as", ["User", "Admin"])
 
-embeddings = HuggingFaceEmbeddings()
-os.environ["ANTHROPIC_API_KEY"] = "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"
+documents = []
+index = None
+
+# -------------------
 # ADMIN PANEL
+# -------------------
+
 if role == "Admin":
 
-    st.header("Admin Panel - Upload Subject PDFs")
+    st.header("Admin: Upload Subject PDF")
 
-    uploaded_file = st.file_uploader("Upload Subject PDF", type="pdf")
+    uploaded_file = st.file_uploader("Upload PDF", type="pdf")
 
     if uploaded_file:
 
@@ -28,43 +34,67 @@ if role == "Admin":
         for page in reader.pages:
             text += page.extract_text()
 
-        splitter = CharacterTextSplitter(
-            chunk_size=500,
-            chunk_overlap=50
-        )
+        documents = text.split("\n")
 
-        texts = splitter.split_text(text)
+        embeddings = model.encode(documents)
 
-        db = FAISS.from_texts(texts, embeddings)
+        dim = embeddings.shape[1]
 
-        db.save_local("vectorstore")
+        index = faiss.IndexFlatL2(dim)
 
-        st.success("Vector database created successfully!")
+        index.add(np.array(embeddings))
 
+        faiss.write_index(index, "vectorstore/index.faiss")
+
+        np.save("vectorstore/docs.npy", documents)
+
+        st.success("Vector database created!")
+
+# -------------------
 # USER PANEL
+# -------------------
+
 if role == "User":
 
     st.header("Ask Questions")
 
-    if os.path.exists("vectorstore"):
+    if os.path.exists("vectorstore/index.faiss"):
 
-        db = FAISS.load_local("vectorstore", embeddings)
+        index = faiss.read_index("vectorstore/index.faiss")
+
+        documents = np.load("vectorstore/docs.npy", allow_pickle=True)
 
         question = st.text_input("Enter your question")
 
         if question:
 
-            docs = db.similarity_search(question)
+            query_vector = model.encode([question])
 
-            llm = ChatAnthropic(model="claude-3-haiku-20240307",temperature=0)
+            distances, ids = index.search(np.array(query_vector), k=3)
 
-            chain = create_stuff_documents_chain(llm)
-            response = chain.invoke({"input_documents": docs,"question": question})
-            answer=response
+            context = ""
+
+            for i in ids[0]:
+                context += documents[i] + "\n"
+
+            client = anthropic.Anthropic(
+                api_key=st.secrets["ANTHROPIC_API_KEY"]
+            )
+
+            response = client.messages.create(
+                model="claude-3-haiku-20240307",
+                max_tokens=300,
+                messages=[
+                    {
+                        "role": "user",
+                        "content": f"Answer based on context:\n{context}\nQuestion:{question}"
+                    }
+                ]
+            )
 
             st.write("### Answer")
-            st.write(answer)
+            st.write(response.content[0].text)
 
     else:
 
-        st.warning("No subject database found. Admin must upload PDFs.")
+        st.warning("Admin must upload PDF first.")
