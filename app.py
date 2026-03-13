@@ -94,7 +94,18 @@ if role == "User":
             )
 
             try:
-                response = client.messages.create(model="claude-3-5-haiku-latest",max_tokens=200, "content": f"Context:\n{context}\n\nQuestion:{question}"}])
+                
+                response = client.messages.create(
+        model="claude-3-5-haiku-latest",
+        max_tokens=200,
+        messages=[
+            {
+                "role": "user",
+                "content": f"Context:\n{context}\n\nQuestion:{question}"
+            }
+        ]
+    )
+               
                 answer = response.content[0].text
                 
             except Exception as e:
