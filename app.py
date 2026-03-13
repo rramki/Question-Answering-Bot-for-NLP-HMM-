@@ -23,8 +23,6 @@ if role == "Admin":
     else:
         admin_logged = False
 
-#Admin Upload Section
-
 if admin_logged:
 
     subject = st.selectbox(
@@ -34,7 +32,7 @@ if admin_logged:
 
     uploaded_file = st.file_uploader("Upload PDF", type="pdf")
 
-#Create Vector Database
+
 
 if uploaded_file:
 
@@ -65,7 +63,8 @@ if uploaded_file:
 
     st.success(f"{subject} vector database created!")
 
-#User Query Section
+
+
 st.header("Ask Questions")
 
 subject = st.selectbox(
@@ -82,7 +81,7 @@ if os.path.exists(f"{folder}/index.faiss"):
 
     documents = np.load(f"{folder}/docs.npy", allow_pickle=True)
 
-#Answer Generation
+
 question = st.text_input("Enter your question")
 
 if question:
