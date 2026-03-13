@@ -9,17 +9,6 @@ import anthropic
 st.title("📚 AI Tutor for NLP / HMM")
 
 model = SentenceTransformer("all-MiniLM-L6-v2")
-def split_text(text, chunk_size=500):
-    words = text.split()
-    chunks = []
-    
-    for i in range(0, len(words), chunk_size):
-        chunk = " ".join(words[i:i+chunk_size])
-        chunks.append(chunk)
-        
-    return chunks
-
-
 role = st.sidebar.selectbox("Login as", ["User", "Admin"])
 
 documents = []
@@ -75,40 +64,33 @@ if role == "User":
 
         documents = np.load("vectorstore/docs.npy", allow_pickle=True)
 
-question = st.text_input("Enter your question")
+        question = st.text_input("Enter your question")
 
-if question:
+        if question:
+            query_vector = model.encode([question])
+            distances, ids = index.search(np.array(query_vector), k=3)
 
-    query_vector = model.encode([question])
-    distances, ids = index.search(np.array(query_vector), k=3)
+            context = ""
 
-    context = ""
+            for i in ids[0]:
+                context += documents[i] + "\n"
+            client = anthropic.Anthropic(
+                api_key=st.secrets["ANTHROPIC_API_KEY"]
+            )
 
-    for i in ids[0][:2]:
-        context += documents[i][:700] + "\n"
+            response = client.messages.create(
+    model="claude-3-5-haiku-latest",
+    max_tokens=300,
+    messages=[
+        {
+            "role": "user",
+            "content": f"Context:\n{context}\n\nQuestion:{question}"
+        }
+    ]
+)
 
-    context = context[:1500]
-
-    answer = None
-
-    try:
-        response = client.messages.create(
-            model="claude-3-5-haiku-latest",
-            max_tokens=200,
-            messages=[{
-                "role": "user",
-                "content": f"Context:\n{context}\n\nQuestion:{question}"
-            }]
-        )
-
-        answer = response.content[0].text
-
-    except Exception:
-        st.error("Claude API error. Try asking a shorter question.")
-
-    if answer:
-        st.write("### Answer")
-        st.write(answer)
+            st.write("### Answer")
+            st.write(answer)
     else:
 
         st.warning("Admin must upload PDF first.")
