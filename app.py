@@ -94,15 +94,14 @@ if role == "User":
             )
 
             try:
-                response = client.messages.create(model="claude-3-5-haiku-latest",max_tokens=200,messages=[{"role": "user","content": f"Context:\n{context}\n\nQuestion:{question}"}])
-
-                st.write(response.content[0].text)
-
+                response = client.messages.create(model="claude-3-5-haiku-latest",max_tokens=200, "content": f"Context:\n{context}\n\nQuestion:{question}"}])
+                answer = response.content[0].text
+                
             except Exception as e:
                 st.error("Claude API error. Try asking a shorter question.")
-                
-            st.write("### Answer")
-            st.write(response.content[0].text)
+            if answer:
+                st.write("### Answer")
+                st.write(response.content[0].text)
 
     else:
 
