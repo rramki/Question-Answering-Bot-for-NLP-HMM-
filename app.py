@@ -69,7 +69,7 @@ st.header("Ask Questions")
 
 subject = st.selectbox(
     "Select Subject",
-    ["NLP", "MachineLearning", "CloudComputing"]
+    ["nlp", "ml", "cloud"]
 )
 
 #Load the vector database:
