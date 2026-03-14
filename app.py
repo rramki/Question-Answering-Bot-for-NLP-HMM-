@@ -15,7 +15,7 @@ role = st.sidebar.selectbox("Login as", ["Student", "Admin"])
 #Studnet  Interface Page
 if role == "Student":
     st.title("AI Course Tutor")
-subject = st.selectbox(
+    subject = st.selectbox(
         "Choose Subject",
         ["NLP", "MachineLearning", "CloudComputing"]
     )
