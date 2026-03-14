@@ -53,7 +53,7 @@ if role == "Admin":
 
         index.add(np.array(embeddings))
 
-        folder = f"vectorstore/{subject}"
+        folder = f"/vectorstore/{subject}"
 
         os.makedirs(folder, exist_ok=True)
 
