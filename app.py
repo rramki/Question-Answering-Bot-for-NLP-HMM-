@@ -38,6 +38,9 @@ if os.path.exists(f"{folder}/index.faiss"):
         for i in ids[0][:2]:
             context += documents[i][:700] + "\n"
 
+
+ADMIN_USER = "admin"
+ADMIN_PASS = "nlp123"
 if role == "Admin":
 
     username = st.sidebar.text_input("Admin Username")
