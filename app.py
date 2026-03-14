@@ -11,6 +11,7 @@ ADMIN_USER = "admin"
 ADMIN_PASS = "nlp123"
 model = SentenceTransformer("all-MiniLM-L6-v2")
 
+#Sidebar for Admin
 role = st.sidebar.selectbox("Login as", ["User", "Admin"])
 
 if role == "Admin":
@@ -32,7 +33,7 @@ if role == "Admin":
 
     uploaded_file = st.file_uploader("Upload PDF", type="pdf")
 
-
+#Uploading  the File
 
     if uploaded_file:
         reader = PdfReader(uploaded_file)
@@ -63,7 +64,7 @@ if role == "Admin":
         st.success(f"{subject} vector database created!")
 
 
-
+#User Interface Page
 st.header("Ask Questions")
 
 subject = st.selectbox(
