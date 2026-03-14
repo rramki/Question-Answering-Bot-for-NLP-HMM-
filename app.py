@@ -25,9 +25,9 @@ if role == "Admin":
     else:
         admin_logged = False
 
-    if admin_logged:
-        subject = st.selectbox("Select Subject",["nlp", "ml", "cloud"])
-        uploaded_file = st.file_uploader("Upload PDF", type="pdf")
+if admin_logged:
+    subject = st.selectbox("Select Subject",["nlp", "ml", "cloud"])
+    uploaded_file = st.file_uploader("Upload PDF", type="pdf")
 
 if uploaded_file:
     reader = PdfReader(uploaded_file)
