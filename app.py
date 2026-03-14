@@ -11,8 +11,8 @@ ADMIN_USER = "admin"
 ADMIN_PASS = "nlp123"
 model = SentenceTransformer("all-MiniLM-L6-v2")
 
-#Sidebar for Admin
-role = st.sidebar.selectbox("Login as", ["User", "Admin"])
+#Sidebar for Studnet and Admin
+role = st.sidebar.selectbox("Login as", ["Student", "Admin"])
 
 if role == "Admin":
 
@@ -57,13 +57,14 @@ if admin_logged:
         st.success(f"{subject} vector database created!")
 
 
-#User Interface Page
-st.header("Ask Questions")
+#Studnet  Interface Page
+if role == "Student":
+    st.title("AI Course Tutor")
+    subject = st.selectbox(
+        "Choose Subject",
+        ["NLP", "MachineLearning", "CloudComputing"]
+    )
 
-subject = st.selectbox(
-    "Select Subject",
-    ["nlp", "ml", "cloud"]
-)
 
 #Load the vector database:
 folder = f"vectorstore/{subject}"
@@ -78,7 +79,6 @@ if os.path.exists(f"{folder}/index.faiss"):
 question = st.text_input("Enter your question")
 
 if question:
-
     query_vector = model.encode([question])
 
     distances, ids = index.search(np.array(query_vector), k=2)
