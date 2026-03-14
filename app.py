@@ -33,7 +33,7 @@ if role == "Admin":
 
     uploaded_file = st.file_uploader("Upload PDF", type="pdf")
 
-#Uploading  the File
+    #Uploading  the File
 
     if uploaded_file:
         reader = PdfReader(uploaded_file)
