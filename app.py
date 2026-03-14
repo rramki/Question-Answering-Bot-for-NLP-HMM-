@@ -19,11 +19,11 @@ if role == "Admin":
     username = st.sidebar.text_input("Admin Username")
     password = st.sidebar.text_input("Admin Password", type="password")
 
-    if username == ADMIN_USER and password == ADMIN_PASS:
-        st.success("Admin logged in")
-        admin_logged = True
-    else:
-        admin_logged = False
+if username == ADMIN_USER and password == ADMIN_PASS:
+    st.success("Admin logged in")
+    admin_logged = True
+else:
+    admin_logged = False
 
 if admin_logged:
     subject = st.selectbox("Select Subject",["nlp", "ml", "cloud"])
