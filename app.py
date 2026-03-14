@@ -14,6 +14,36 @@ model = SentenceTransformer("all-MiniLM-L6-v2")
 #Sidebar for Studnet and Admin
 role = st.sidebar.selectbox("Login as", ["Student", "Admin"])
 
+#Studnet  Interface Page
+if role == "Student":
+    st.title("AI Course Tutor")
+subject = st.selectbox(
+        "Choose Subject",
+        ["NLP", "MachineLearning", "CloudComputing"]
+    )
+
+#Load the vector database:
+folder = f"vectorstore/{subject}"
+
+if os.path.exists(f"{folder}/index.faiss"):
+
+    index = faiss.read_index(f"{folder}/index.faiss")
+
+    documents = np.load(f"{folder}/docs.npy", allow_pickle=True)
+
+
+question = st.text_input("Enter your question")
+
+if question:
+    query_vector = model.encode([question])
+
+    distances, ids = index.search(np.array(query_vector), k=2)
+
+    context = ""
+
+    for i in ids[0][:2]:
+        context += documents[i][:700] + "\n"
+
 if role == "Admin":
 
     username = st.sidebar.text_input("Admin Username")
@@ -56,35 +86,4 @@ if admin_logged:
 
     st.success(f"{subject} vector database created!")
 
-
-#Studnet  Interface Page
-if role == "Student":
-    st.title("AI Course Tutor")
-subject = st.selectbox(
-        "Choose Subject",
-        ["NLP", "MachineLearning", "CloudComputing"]
-    )
-
-
-#Load the vector database:
-folder = f"vectorstore/{subject}"
-
-if os.path.exists(f"{folder}/index.faiss"):
-
-    index = faiss.read_index(f"{folder}/index.faiss")
-
-    documents = np.load(f"{folder}/docs.npy", allow_pickle=True)
-
-
-question = st.text_input("Enter your question")
-
-if question:
-    query_vector = model.encode([question])
-
-    distances, ids = index.search(np.array(query_vector), k=2)
-
-    context = ""
-
-    for i in ids[0][:2]:
-        context += documents[i][:700] + "\n"
 
