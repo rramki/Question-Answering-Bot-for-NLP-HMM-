@@ -28,7 +28,7 @@ if role == "Admin":
     if admin_logged:
         subject = st.selectbox(
         "Select Subject",
-        ["NLP", "MachineLearning", "CloudComputing"]
+        ["nlp", "ml", "cloud"]
     )
 
     uploaded_file = st.file_uploader("Upload PDF", type="pdf")
