@@ -60,7 +60,7 @@ if admin_logged:
 #Studnet  Interface Page
 if role == "Student":
     st.title("AI Course Tutor")
-    subject = st.selectbox(
+subject = st.selectbox(
         "Choose Subject",
         ["NLP", "MachineLearning", "CloudComputing"]
     )
