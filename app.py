@@ -7,8 +7,6 @@ import os
 import anthropic
 
 st.title("📚 AI Tutor for NLP")
-ADMIN_USER = "admin"
-ADMIN_PASS = "nlp123"
 model = SentenceTransformer("all-MiniLM-L6-v2")
 
 #Sidebar for Studnet and Admin
@@ -26,23 +24,19 @@ subject = st.selectbox(
 folder = f"vectorstore/{subject}"
 
 if os.path.exists(f"{folder}/index.faiss"):
-
     index = faiss.read_index(f"{folder}/index.faiss")
-
     documents = np.load(f"{folder}/docs.npy", allow_pickle=True)
+    question = st.text_input("Enter your question")
+    
+    if question:
+        query_vector = model.encode([question])
 
+        distances, ids = index.search(np.array(query_vector), k=2)
 
-question = st.text_input("Enter your question")
+        context = ""
 
-if question:
-    query_vector = model.encode([question])
-
-    distances, ids = index.search(np.array(query_vector), k=2)
-
-    context = ""
-
-    for i in ids[0][:2]:
-        context += documents[i][:700] + "\n"
+        for i in ids[0][:2]:
+            context += documents[i][:700] + "\n"
 
 if role == "Admin":
 
